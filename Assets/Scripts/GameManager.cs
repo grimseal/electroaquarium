@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
     private PowerLine[] powerLines;
-
     private Dictionary<PowerLine, PowerLine> joints;
-
+    [SerializeField] private PowerLine finishPowerLine;
     public bool allConnected;
 
     public void Start()
@@ -21,7 +19,6 @@ public class GameManager : Singleton<GameManager>
     {
         a.Join(b);
         joints[a] = b;
-
         if (CheckIfAllConnected()) allConnected = true;
     }
 
@@ -29,24 +26,14 @@ public class GameManager : Singleton<GameManager>
     {
         var list = powerLines.ToList();
         var next = list[0];
-        list.RemoveAt(0);
-        if (!joints.ContainsKey(next))
-        {
-            Debug.Log($"not enouth {list.Count}");
-            return false;
-        }
+        list.Remove(next);
+        if (!joints.ContainsKey(next)) return false;
         while (list.Count > 1)
         {
-            if (!joints.ContainsKey(joints[next]))
-            {
-                Debug.Log($"not enouth {list.Count}");
-                return false;
-            }
-            next = joints[joints[next]];
+            if (!joints.ContainsKey(joints[next])) return false;
+            next = joints[next];
+            list.Remove(next);
         }
-        Debug.Log("Win?");
-        return true;
+        return list.Count == 1 && list[0] == finishPowerLine;
     }
-    
-    
 }

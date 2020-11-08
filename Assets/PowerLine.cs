@@ -10,6 +10,8 @@ public class PowerLine : MonoBehaviour
     private Transform target;
     public bool joined { get; private set; }
 
+    public bool canHandle => /*!GameManager.Instance.allConnected &&*/ !joined;
+
     private void Start()
     {
         col = GetComponent<Collider2D>();

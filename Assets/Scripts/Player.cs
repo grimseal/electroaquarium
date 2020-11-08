@@ -253,7 +253,7 @@ public class Player : Character
         var item = itemCollider.GetComponent<Item>();
         if (item) itemsInRange.Add(item);
         var powerLine = itemCollider.GetComponent<PowerLine>();
-        if (powerLine && !powerLine.joined) powerLinesInRange.Add(powerLine);
+        if (powerLine && powerLine.canHandle) powerLinesInRange.Add(powerLine);
         grabTip.SetActive(grabTipVisible);
     }
 
