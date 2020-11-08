@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class PowerLine : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class PowerLine : MonoBehaviour
     public bool joined { get; private set; }
 
     public bool canHandle => /*!GameManager.Instance.allConnected &&*/ !joined;
+    public bool powered => light.enabled;
+
+    [SerializeField] private Light2D light;
 
     private void Start()
     {
@@ -52,6 +56,12 @@ public class PowerLine : MonoBehaviour
         joined = true;
         this.target = null;
         AddPoint(powerLine.transform.position);
+        powerLine.TurnOn();
+    }
+
+    public void TurnOn()
+    {
+        light.enabled = true;
     }
 
     private void AddPoint(Vector3 position)

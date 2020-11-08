@@ -35,6 +35,15 @@ public class Player : Character
     private PowerLine powerLineInHands;
 
     [SerializeField] private Transform itemsContainer;
+    
+    private List<PowerLine> filteredPowerLinesInRange
+    {
+        get
+        {
+            if (powerLineInHands == null) return powerLinesInRange.Where(l => l.powered).ToList();
+            return powerLinesInRange.Where(l => !l.powered && l != powerLineInHands).ToList();
+        }
+    }
 
     protected void Start()
     {
@@ -118,12 +127,14 @@ public class Player : Character
         {
             GameManager.Instance.PowerLineJoined(powerLineInHands, targetLine);
             powerLineInHands = null;
+            UpdateTip();
             return;
         }
         
         DropItem();
         powerLineInHands = targetLine;
         powerLineInHands.TakeWireBy(transform);
+        UpdateTip();
     }
 
     private void GrabWeapon(Item item)
@@ -190,7 +201,7 @@ public class Player : Character
         return closestItem;
     }
     
-    private List<PowerLine> filteredPowerLinesInRange => powerLinesInRange.Where(l => l != powerLineInHands).ToList();
+    
 
     public PowerLine GetClosestPowerLine()
     {
@@ -254,7 +265,7 @@ public class Player : Character
         if (item) itemsInRange.Add(item);
         var powerLine = itemCollider.GetComponent<PowerLine>();
         if (powerLine && powerLine.canHandle) powerLinesInRange.Add(powerLine);
-        grabTip.SetActive(grabTipVisible);
+        UpdateTip();
     }
 
     private void ItemLeave(Collider2D itemCollider)
@@ -263,6 +274,11 @@ public class Player : Character
         if (item) itemsInRange.Remove(item);
         var powerLine = itemCollider.GetComponent<PowerLine>();
         if (powerLine) powerLinesInRange.Remove(powerLine);
+        UpdateTip();
+    }
+
+    private void UpdateTip()
+    {
         grabTip.SetActive(grabTipVisible);
     }
 
