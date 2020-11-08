@@ -35,6 +35,18 @@ public class Player : Character
     private PowerLine powerLineInHands;
 
     [SerializeField] private Transform itemsContainer;
+    public bool startListen;
+
+    public override bool overloaded
+    {
+        get => _overloaded;
+        set
+        {
+            _overloaded = value;
+            overloadIcon.SetActive(value);
+            if (value) GameManager.Instance.GameOver();
+        }
+    }
     
     private List<PowerLine> filteredPowerLinesInRange
     {
@@ -56,6 +68,8 @@ public class Player : Character
 
     private void Update()
     {
+        if (!startListen) return;
+
         var inputUp = Input.GetKey(KeyCode.W);
         var inputDown = Input.GetKey(KeyCode.S);
         var inputLeft = Input.GetKey(KeyCode.A);
@@ -183,6 +197,7 @@ public class Player : Character
         powerMax += 1;
         overloaded = false;
         powered = power == powerMax;
+        GameManager.Instance.SetPlayerHealth(power, powerMax);
     }
 
     public Item GetClosestItem()

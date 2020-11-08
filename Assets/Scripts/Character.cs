@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    
     private static readonly int Power = Animator.StringToHash("power");
     
     [SerializeField] protected Animator animator;
@@ -32,8 +30,8 @@ public class Character : MonoBehaviour
         }
     }
 
-    private bool _overloaded;
-    public bool overloaded
+    protected bool _overloaded;
+    public virtual bool overloaded
     {
         get => _overloaded;
         set
@@ -52,6 +50,7 @@ public class Character : MonoBehaviour
             SetOverloadState();
             power = 0;
         }
+        if (this is Player) GameManager.Instance.SetPlayerHealth(power, powerMax);
     }
 
     protected void DecreasePower()
@@ -60,6 +59,7 @@ public class Character : MonoBehaviour
         power -= 1;
         if (power != powerMax) powered = false;
         if (power < 0) power = 0;
+        if (this is Player) GameManager.Instance.SetPlayerHealth(power, powerMax);
         if (startPower == power || power != 0)  return;
         StartCoroutine(RechargeTimeout());
     }
